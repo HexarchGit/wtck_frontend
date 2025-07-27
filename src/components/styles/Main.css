@@ -1,0 +1,59 @@
+.main {
+  display: flex;
+  flex-direction: column;
+  max-width: 100%;
+  font: normal 500 clamp(18px, 1vw, 20px) / 1 "Cabinet Grotesk", Arial,
+    sans-serif;
+}
+
+.main__text {
+  margin: max(40px, 3vw) 0 2vw 0;
+  text-align: center;
+  font-size: clamp(18px, 4vw, 48px);
+}
+.main__searcharea {
+  display: flex;
+  gap: 5px;
+  max-width: 70vw;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.main__search {
+  width: 100%;
+  padding: 1.2vw;
+  border: solid 1px rgba(0, 0, 0, 0.5);
+  border-radius: 30px;
+}
+
+.main__button {
+  border-radius: 30px;
+  font: inherit;
+  flex-grow: 1;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  padding: 4px;
+}
+
+.main__button__type_forget {
+  background-color: #8a47eb;
+}
+
+.main__button__type_random {
+  background-color: orange;
+}
+
+.main__list {
+  padding: 0;
+  list-style-type: none;
+  display: grid;
+  justify-content: center;
+  grid-gap: 20px;
+  grid-template-columns: repeat(auto-fit, 325px);
+  width: 100%;
+}
+
+@media screen and (max-width: 765px) {
+  .main__searcharea {
+    max-width: 90%;
+  }
+}

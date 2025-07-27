@@ -1,0 +1,34 @@
+.modal__form {
+  display: flex;
+  flex-direction: column;
+  border: none;
+  gap: 24px;
+}
+
+.modal__title {
+  margin: 0;
+  font: inherit;
+}
+
+.modal__buttons {
+  margin: 8px 0 0;
+}
+
+.modal__button_type_submit {
+  font: inherit;
+  padding: 8px 15px;
+  background: #000;
+  color: #fff;
+  border-radius: 4px;
+}
+
+.modal__button_type_alternative {
+  font: inherit;
+  padding: 10px;
+  background: inherit;
+  color: #00000080;
+}
+
+.modal__button_disabled {
+  background-color: rgba(0, 0, 0, 0.3);
+}

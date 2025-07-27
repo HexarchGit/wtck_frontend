@@ -1,0 +1,15 @@
+.about {
+  background-color: #ffffffe6;
+  border-radius: 50px;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  margin: auto;
+}
+
+.about__text {
+  margin: 0;
+  font: normal 500 clamp(16px, 5vw, 24px) / 2 "Cabinet Grotesk", Arial,
+    sans-serif;
+  text-align: center;
+}

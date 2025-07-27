@@ -1,0 +1,17 @@
+.profile {
+  display: grid;
+  grid-template-columns: 325px auto;
+  grid-gap: 20px;
+  font: normal 700 clamp(16px, 2vw, 20px) / 1 "Cabinet Grotesk", Arial,
+    sans-serif;
+  margin: 47px 0 80px;
+}
+
+@media screen and (max-width: 765px) {
+  .profile {
+    grid-template-columns: 100%;
+    justify-content: center;
+    grid-gap: 4px;
+    margin: 0 0 40px;
+  }
+}

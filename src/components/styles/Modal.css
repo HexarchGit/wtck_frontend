@@ -1,0 +1,65 @@
+/* Contains common modal styles, shared between modals */
+.modal {
+  position: fixed;
+  display: flex;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 0 19px;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out, visibility linear 0.5s;
+  font: normal 700 16px / 1.2 "Cabinet Grotesk", Arial, sans-serif;
+}
+
+.modal_opened {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.3s ease-in-out, visibility linear 0s 0s;
+}
+
+.modal__button {
+  cursor: pointer;
+  transition: opacity 0.5s;
+  border: none;
+  box-sizing: border-box;
+}
+
+.modal__button:hover {
+  opacity: 60%;
+}
+
+.modal__button_type_close {
+  height: min(4vw, 20px);
+  width: min(4vw, 20px);
+  position: absolute;
+  top: max(10px, 1vw);
+  right: max(10px, 1.5vw);
+  background: center no-repeat;
+  padding: 0;
+  background-image: url(../../assets/button_close_black.svg);
+}
+
+.modal__label {
+  position: relative;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.modal__input {
+  font: inherit;
+  box-sizing: border-box;
+  margin: 8px 0 0;
+  padding: 0 0 4px;
+  border: none;
+  border-bottom: 1px solid;
+  display: block;
+  width: 100%;
+}
+
+.modal__error {
+  color: #ff4d00;
+}
