@@ -39,7 +39,7 @@ export function useFormValidation(fields) {
       refErrors.current = newErrors;
       refIsValid.current = newIsValid;
     },
-    []
+    [refValues, refErrors, refIsValid]
   );
 
   return {
