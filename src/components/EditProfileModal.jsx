@@ -21,7 +21,7 @@ export default function EditProfileModal({ onSubmit }) {
       editUserName: userData.name,
       editUserAvatar: userData.avatar,
     });
-  }, [userData]);
+  }, [userData, setInputs]);
 
   useSaveContext(modalName, inputsNames, validator);
 

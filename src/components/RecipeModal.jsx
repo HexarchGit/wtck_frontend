@@ -1,4 +1,4 @@
-import { useContext, useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useCloseModal } from "../hooks/useCloseModal.js";
 import "./styles/RecipeModal.css";
 import Modal from "./Modal";

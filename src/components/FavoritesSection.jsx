@@ -1,6 +1,6 @@
 import "./styles/FavoritesSection.css";
 import RecipeCard from "./RecipeCard.jsx";
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import { CurrentUserContext } from "../contexts/CurrentUserContext.js";
 
 const FavoritesSection = ({ onOpen }) => {

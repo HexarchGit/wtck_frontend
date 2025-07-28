@@ -1,5 +1,5 @@
 const endpointUrl =
-  process.env.NODE_ENV === "production"
+  import.meta.env.MODE === "production"
     ? import.meta.env.VITE_BACKEND_API
     : "http://localhost:3001";
 

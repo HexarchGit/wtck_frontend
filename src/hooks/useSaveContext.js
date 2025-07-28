@@ -10,6 +10,9 @@ export function useSaveContext(
   useEffect(() => {
     const inputs = {};
     const errors = {};
+    const currentValues = refValues.current;
+    const currentErrors = refErrors.current;
+    const currentIsValid = refIsValid.current;
     if (formContext?.[modalName]) {
       for (const inputName in inputsNames) {
         inputs[inputName] = formContext[modalName]?.values[inputName] || "";
@@ -20,11 +23,20 @@ export function useSaveContext(
     return () => {
       setFormContext({
         [modalName]: {
-          values: refValues.current,
-          errors: refErrors.current,
-          valid: refIsValid.current,
+          values: currentValues,
+          errors: currentErrors,
+          valid: currentIsValid,
         },
       });
     };
-  }, [refValues]);
+  }, [
+    refValues,
+    refErrors,
+    refIsValid,
+    formContext,
+    modalName,
+    inputsNames,
+    setInputs,
+    setFormContext,
+  ]);
 }

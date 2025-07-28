@@ -60,19 +60,22 @@ export default function App() {
       const names = response.meals.map((item) => item.strIngredient);
       setIngridientsList(names);
     });
-  }, []);
+  }, [apiDb]);
 
-  const handleChosing = useCallback(async (choose) => {
-    setIsLoading(true);
-    try {
-      const response = await apiDb.getRecipesByIngridient(choose);
-      setRecipeList(response.meals);
-    } catch (error) {
-      console.error(`Failed to get random meal: ${error}`);
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+  const handleChosing = useCallback(
+    async (choose) => {
+      setIsLoading(true);
+      try {
+        const response = await apiDb.getRecipesByIngridient(choose);
+        setRecipeList(response.meals);
+      } catch (error) {
+        console.error(`Failed to get random meal: ${error}`);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [apiDb]
+  );
 
   const handleClearRecipeList = useCallback(() => {
     setRecipeList();
@@ -90,18 +93,21 @@ export default function App() {
     return meal;
   };
 
-  const handleOpenMealModal = useCallback(async (data) => {
-    setIsLoading(true);
-    try {
-      const mealData = await apiDb.getRecipeByID(data.idMeal);
-      const meal = parseMealIngridients(mealData.meals[0]);
-      setActiveRecipe(meal);
-    } catch (error) {
-      console.error(`Failed to get random meal: ${error}`);
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+  const handleOpenMealModal = useCallback(
+    async (data) => {
+      setIsLoading(true);
+      try {
+        const mealData = await apiDb.getRecipeByID(data.idMeal);
+        const meal = parseMealIngridients(mealData.meals[0]);
+        setActiveRecipe(meal);
+      } catch (error) {
+        console.error(`Failed to get random meal: ${error}`);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [apiDb]
+  );
 
   const handleCloseMealModal = () => {
     setActiveRecipe();
@@ -119,7 +125,7 @@ export default function App() {
         setIsLoading(false);
       }
     } else setRecipeList();
-  }, [recipeList]);
+  }, [recipeList, apiDb]);
 
   const handleCloseModal = useCallback(() => {
     setActiveModal();
@@ -163,7 +169,7 @@ export default function App() {
         setIsLoading(false);
       }
     },
-    [handleSignIn]
+    [handleSignIn, cleanFormContext]
   );
 
   const handleLoginSubmit = useCallback(
@@ -182,7 +188,7 @@ export default function App() {
         setIsLoading(false);
       }
     },
-    [handleSignIn]
+    [handleSignIn, cleanFormContext]
   );
 
   const handleLogOut = () => {
@@ -192,50 +198,56 @@ export default function App() {
     navigate("/");
   };
 
-  const handleEditSubmit = useCallback(async (submitData) => {
-    cleanFormContext("profile-edit");
-    setIsLoading(true);
-    const editData = {
-      name: submitData["editUserName"] || user.name,
-      avatar: submitData["editUserAvatar"] || user.avatar,
-    };
-    try {
-      const user = await apiDb.updateUserProfile(getToken(), editData);
-      setUserData(user);
-      handleCloseModal();
-    } catch (error) {
-      console.error(`Failed to update user profile: ${error}`);
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+  const handleEditSubmit = useCallback(
+    async (submitData) => {
+      cleanFormContext("profile-edit");
+      setIsLoading(true);
+      const editData = {
+        name: submitData["editUserName"] || userData.name,
+        avatar: submitData["editUserAvatar"] || userData.avatar,
+      };
+      try {
+        const user = await apiDb.updateUserProfile(getToken(), editData);
+        setUserData(user);
+        handleCloseModal();
+      } catch (error) {
+        console.error(`Failed to update user profile: ${error}`);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [apiDb, cleanFormContext, handleCloseModal, userData]
+  );
 
-  const handleFavorites = useCallback(async (mealCard, isInFavorites) => {
-    setIsLoading(true);
-    const mealData = {
-      mealName: mealCard.strMeal,
-      mealId: mealCard.idMeal,
-      imageUrl: mealCard.strMealThumb,
-    };
-    try {
-      const token = getToken();
-      const newFavorites = isInFavorites
-        ? await apiDb.removeFavorite(token, { mealId: mealData.mealId })
-        : await apiDb.addFavorite(token, mealData);
-      console.log(newFavorites);
-      setUserData((prev) => ({
-        ...prev,
-        favorites: [...newFavorites],
-      }));
-    } catch (error) {
-      console.error(
-        `Failed to ${isInFavorites ? "remove" : "add"} favorite:`,
-        error
-      );
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+  const handleFavorites = useCallback(
+    async (mealCard, isInFavorites) => {
+      setIsLoading(true);
+      const mealData = {
+        mealName: mealCard.strMeal,
+        mealId: mealCard.idMeal,
+        imageUrl: mealCard.strMealThumb,
+      };
+      try {
+        const token = getToken();
+        const newFavorites = isInFavorites
+          ? await apiDb.removeFavorite(token, { mealId: mealData.mealId })
+          : await apiDb.addFavorite(token, mealData);
+        console.log(newFavorites);
+        setUserData((prev) => ({
+          ...prev,
+          favorites: [...newFavorites],
+        }));
+      } catch (error) {
+        console.error(
+          `Failed to ${isInFavorites ? "remove" : "add"} favorite:`,
+          error
+        );
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [apiDb]
+  );
 
   return (
     <main className="page">
