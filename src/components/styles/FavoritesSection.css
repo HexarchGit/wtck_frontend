@@ -20,7 +20,7 @@
   list-style-type: none;
   display: grid;
   grid-gap: 20px;
-  grid-template-columns: repeat(auto-fit, 325px);
+  grid-template-columns: repeat(auto-fit, 300px);
   width: 100%;
 }
 

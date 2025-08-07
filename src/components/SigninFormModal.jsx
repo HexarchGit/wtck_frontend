@@ -3,12 +3,12 @@ import { useFormValidation } from "../hooks/useFormValidation";
 import { useSaveContext } from "../hooks/useSaveContext";
 import "./styles/SigninFormModal.css";
 import { useContext } from "react";
-import { AppContext } from "../contexts/AppContext.js";
-import { signInPopupConfig, signUpPopupConfig } from "../utils/constants.js";
+import { AppContext } from "../contexts/AppContext";
+import { SIGNINPOPUP, SIGNUPPOPUP } from "../utils/constants";
 
 export default function SigninFormModal({ onSubmit }) {
   const { handleOpenModal } = useContext(AppContext);
-  const { modalName } = signInPopupConfig;
+  const { modalName } = SIGNINPOPUP;
   const inputsNames = {
     signinUserEmail: "",
     signinUserPassword: "",
@@ -16,7 +16,7 @@ export default function SigninFormModal({ onSubmit }) {
   const validator = useFormValidation(inputsNames);
   const { values, errors, isValid, handleInputChange, setInputs } = validator;
 
-  useSaveContext(modalName, inputsNames, validator);
+  useSaveContext(modalName, validator);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -25,7 +25,7 @@ export default function SigninFormModal({ onSubmit }) {
   };
 
   const handleSignUp = () => {
-    handleOpenModal(signUpPopupConfig);
+    handleOpenModal(SIGNUPPOPUP);
   };
 
   const alternativeButton = () => {
@@ -42,7 +42,7 @@ export default function SigninFormModal({ onSubmit }) {
 
   return (
     <ModalWithForm
-      {...signInPopupConfig}
+      {...SIGNINPOPUP}
       isValid={isValid}
       onSubmit={handleSubmit}
       alternativeButton={alternativeButton}

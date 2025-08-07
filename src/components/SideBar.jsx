@@ -1,5 +1,5 @@
 import "./styles/SideBar.css";
-import { editProfilePopupConfig } from "../utils/constants";
+import { EDITPROFILEPOPUP } from "../utils/constants";
 import { useContext } from "react";
 import { AppContext } from "../contexts/AppContext";
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
@@ -8,7 +8,7 @@ export default function SideBar({ onLogOut }) {
   const { userData } = useContext(CurrentUserContext);
   const { handleOpenModal } = useContext(AppContext);
   const handleEditProfile = () => {
-    handleOpenModal(editProfilePopupConfig);
+    handleOpenModal(EDITPROFILEPOPUP);
   };
   const handleLogOut = () => {
     onLogOut();

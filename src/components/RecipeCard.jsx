@@ -1,5 +1,6 @@
 import { memo } from "react";
 import "./styles/RecipeCard.css";
+import Preloader from "./Preloader";
 
 const RecipeCard = memo(({ card, handleCardClick }) => {
   const handleClick = () => {

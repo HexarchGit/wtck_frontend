@@ -9,7 +9,7 @@ import Profile from "./Profile";
 import RecipeModal from "./RecipeModal";
 import SignupFormModal from "./SignupFormModal";
 import SigninFormModal from "./SigninFormModal";
-import EditProfileModal from "./EditProfileModal.jsx";
+import EditProfileFormModal from "./EditProfileFormModal.jsx";
 import Footer from "./Footer";
 import About from "./About.jsx";
 import Preloader from "./Preloader.jsx";
@@ -20,6 +20,8 @@ import { useFormContextCleaner } from "../hooks/useCleanFormContext.js";
 import { getApiDb } from "../utils/apiDb.js";
 import { getToken, setToken, removeToken } from "../utils/token.js";
 import { checkAuth, signin, signup } from "../utils/auth.js";
+import LoginPopup from "./LogInPopup.jsx";
+import InfoPopup from "./InfoPopup.jsx";
 
 export default function App() {
   const [recipeList, setRecipeList] = useState();
@@ -33,8 +35,26 @@ export default function App() {
   const [userData, setUserData] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const [inputQuery, setInputQuery] = useState("");
+  const [notification, setNotification] = useState();
 
   const apiDb = useMemo(() => getApiDb(), []);
+
+  const handleCloseNotification = () => {
+    setNotification();
+  };
+
+  const handleError = (error, errorText) => {
+    console.error(`${errorText}: ${error}`);
+    setNotification({ text: errorText });
+  };
+
+  // useEffect(() => {
+  //   setNotification({
+  //     text: ("Oops, I did it again", "Test error"),
+  //     isNewUser: true,
+  //   });
+  // }, []);
 
   useEffect(() => {
     const jwt = getToken();
@@ -49,7 +69,7 @@ export default function App() {
         setIsAuthChecked(true);
       })
       .catch((error) => {
-        console.error(`Initial auth check failed: ${error}`);
+        handleError(error, "Authentication error");
         removeToken();
         setIsAuthChecked(true);
       });
@@ -69,7 +89,7 @@ export default function App() {
         const response = await apiDb.getRecipesByIngridient(choose);
         setRecipeList(response.meals);
       } catch (error) {
-        console.error(`Failed to get random meal: ${error}`);
+        handleError(error, "Error while getting meals list");
       } finally {
         setIsLoading(false);
       }
@@ -101,7 +121,7 @@ export default function App() {
         const meal = parseMealIngridients(mealData.meals[0]);
         setActiveRecipe(meal);
       } catch (error) {
-        console.error(`Failed to get random meal: ${error}`);
+        handleError(error, "Error gaining recipe details");
       } finally {
         setIsLoading(false);
       }
@@ -109,9 +129,9 @@ export default function App() {
     [apiDb]
   );
 
-  const handleCloseMealModal = () => {
+  const handleCloseMealModal = useCallback(() => {
     setActiveRecipe();
-  };
+  }, []);
 
   const handleMainButton = useCallback(async () => {
     if (!recipeList) {
@@ -120,76 +140,78 @@ export default function App() {
         const response = await apiDb.getRandomRecipe();
         setRecipeList(response.meals);
       } catch (error) {
-        console.error(`Failed to get random meal: ${error}`);
+        handleError(error, "Interactive button error");
       } finally {
         setIsLoading(false);
       }
-    } else setRecipeList();
+    } else {
+      setRecipeList();
+      setInputQuery("");
+    }
   }, [recipeList, apiDb]);
 
-  const handleCloseModal = useCallback(() => {
+  const handleCloseModal = () => {
     setActiveModal();
-  }, []);
+  };
 
   const handleOpenModal = (modalData) => {
     setActiveModal(modalData);
   };
 
-  const handleSignIn = useCallback(
-    async ({ email, password }) => {
-      const { token } = await signin({
-        email,
-        password,
+  const handleSignIn = async ({ email, password }) => {
+    const { token } = await signin({
+      email,
+      password,
+    });
+    setToken(token);
+    setIsLoggedIn(true);
+    const user = await checkAuth(token);
+    setUserData(user);
+    handleCloseModal();
+  };
+
+  const handleRegisterSubmit = async (submitData) => {
+    cleanFormContext("user-signup");
+    setIsLoading(true);
+    const signupData = {
+      name: submitData["userName"],
+      email: submitData["userEmail"],
+      password: submitData["userPassword"],
+      avatar: submitData["userAvatar"],
+    };
+    try {
+      await signup(signupData);
+      const handleConfirmLogin = async () => {
+        return await handleSignIn(signupData);
+      };
+      setNotification({
+        text: "Registration succesful",
+        isNewUser: true,
+        handleConfirmLogin,
       });
-      setToken(token);
-      setIsLoggedIn(true);
-      const user = await checkAuth(token);
-      setUserData(user);
       handleCloseModal();
-    },
-    [handleCloseModal]
-  );
+    } catch (error) {
+      handleError(error, "Failed to register");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-  const handleRegisterSubmit = useCallback(
-    async (submitData) => {
-      cleanFormContext("user-signup");
-      setIsLoading(true);
-      const signupData = {
-        name: submitData["userName"],
-        email: submitData["userEmail"],
-        password: submitData["userPassword"],
-        avatar: submitData["userAvatar"],
-      };
-      try {
-        await signup(signupData);
-        await handleSignIn(signupData);
-      } catch (error) {
-        console.error(`Failed to register and/or signin after: ${error}`);
-      } finally {
-        setIsLoading(false);
-      }
-    },
-    [handleSignIn, cleanFormContext]
-  );
-
-  const handleLoginSubmit = useCallback(
-    async (submitData) => {
-      cleanFormContext("user-signin");
-      setIsLoading(true);
-      const signinData = {
-        email: submitData["signinUserEmail"],
-        password: submitData["signinUserPassword"],
-      };
-      try {
-        await handleSignIn(signinData);
-      } catch (error) {
-        console.error(`Failed to sign in: ${error}`);
-      } finally {
-        setIsLoading(false);
-      }
-    },
-    [handleSignIn, cleanFormContext]
-  );
+  const handleLoginSubmit = async (submitData) => {
+    cleanFormContext("user-signin");
+    setIsLoading(true);
+    const signinData = {
+      email: submitData["signinUserEmail"],
+      password: submitData["signinUserPassword"],
+    };
+    try {
+      await handleSignIn(signinData);
+    } catch (error) {
+      handleError(error, "Failed to sign in");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleLogOut = () => {
     removeToken();
@@ -198,56 +220,49 @@ export default function App() {
     navigate("/");
   };
 
-  const handleEditSubmit = useCallback(
-    async (submitData) => {
-      cleanFormContext("profile-edit");
-      setIsLoading(true);
-      const editData = {
-        name: submitData["editUserName"] || userData.name,
-        avatar: submitData["editUserAvatar"] || userData.avatar,
-      };
-      try {
-        const user = await apiDb.updateUserProfile(getToken(), editData);
-        setUserData(user);
-        handleCloseModal();
-      } catch (error) {
-        console.error(`Failed to update user profile: ${error}`);
-      } finally {
-        setIsLoading(false);
-      }
-    },
-    [apiDb, cleanFormContext, handleCloseModal, userData]
-  );
+  const handleEditSubmit = async (submitData) => {
+    cleanFormContext("profile-edit");
+    setIsLoading(true);
+    const editData = {
+      name: submitData["editUserName"] || userData.name,
+      avatar: submitData["editUserAvatar"] || userData.avatar,
+    };
+    try {
+      const user = await apiDb.updateUserProfile(getToken(), editData);
+      setUserData(user);
+      handleCloseModal();
+    } catch (error) {
+      handleError(error, "Failed to update user profile");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-  const handleFavorites = useCallback(
-    async (mealCard, isInFavorites) => {
-      setIsLoading(true);
-      const mealData = {
-        mealName: mealCard.strMeal,
-        mealId: mealCard.idMeal,
-        imageUrl: mealCard.strMealThumb,
-      };
-      try {
-        const token = getToken();
-        const newFavorites = isInFavorites
-          ? await apiDb.removeFavorite(token, { mealId: mealData.mealId })
-          : await apiDb.addFavorite(token, mealData);
-        console.log(newFavorites);
-        setUserData((prev) => ({
-          ...prev,
-          favorites: [...newFavorites],
-        }));
-      } catch (error) {
-        console.error(
-          `Failed to ${isInFavorites ? "remove" : "add"} favorite:`,
-          error
-        );
-      } finally {
-        setIsLoading(false);
-      }
-    },
-    [apiDb]
-  );
+  const handleFavorites = async (mealCard, isInFavorites) => {
+    setIsLoading(true);
+    const mealData = {
+      mealName: mealCard.strMeal,
+      mealId: mealCard.idMeal,
+      imageUrl: mealCard.strMealThumb,
+    };
+    try {
+      const token = getToken();
+      const newFavorites = isInFavorites
+        ? await apiDb.removeFavorite(token, { mealId: mealData.mealId })
+        : await apiDb.addFavorite(token, mealData);
+      setUserData((prev) => ({
+        ...prev,
+        favorites: [...newFavorites],
+      }));
+    } catch (error) {
+      handleError(
+        error,
+        `Failed to ${isInFavorites ? "remove" : "add"} favorite`
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <main className="page">
@@ -271,6 +286,7 @@ export default function App() {
                     onOpen={handleOpenMealModal}
                     onClear={handleClearRecipeList}
                     onButton={handleMainButton}
+                    searchElement={{ inputQuery, setInputQuery }}
                   />
                 }
               />
@@ -303,9 +319,22 @@ export default function App() {
                 <SigninFormModal onSubmit={handleLoginSubmit} />
               )}
               {activeModal?.modalName === "profile-edit" && (
-                <EditProfileModal onSubmit={handleEditSubmit} />
+                <EditProfileFormModal onSubmit={handleEditSubmit} />
               )}
             </FormContext.Provider>
+            {notification &&
+              (notification.isNewUser ? (
+                <LoginPopup
+                  infoText={notification?.text}
+                  onClose={handleCloseNotification}
+                  onConfirm={notification.handleConfirmLogin}
+                />
+              ) : (
+                <InfoPopup
+                  onClose={handleCloseNotification}
+                  infoText={notification?.text}
+                />
+              ))}
           </CurrentUserContext.Provider>
         </AppContext.Provider>
         <Footer />

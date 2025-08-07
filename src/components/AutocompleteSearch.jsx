@@ -2,8 +2,8 @@ import { useState, useEffect, useMemo, memo } from "react";
 import { useDebounce } from "../hooks/useDebounce.js";
 import "./styles/AutocompleteSearch.css";
 
-const AutocompleteSearch = memo(({ searshList, onChose }) => {
-  const [inputQuery, setInputQuery] = useState("");
+const AutocompleteSearch = memo(({ searshList, onChose, searchElement }) => {
+  const { inputQuery, setInputQuery } = searchElement;
   const debouncedQuery = useDebounce(inputQuery);
   const [isOpen, setIsOpen] = useState(false);
   const [highlightIndex, setHighlightIndex] = useState(-1);
