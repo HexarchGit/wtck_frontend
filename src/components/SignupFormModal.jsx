@@ -1,14 +1,14 @@
 import ModalWithForm from "./ModalWithForm";
-import { useFormValidation } from "../hooks/useFormValidation.js";
-import { useSaveContext } from "../hooks/useSaveContext.js";
+import { useFormValidation } from "../hooks/useFormValidation";
+import { useSaveContext } from "../hooks/useSaveContext";
 import "./styles/SignupFormModal.css";
 import { useContext } from "react";
-import { AppContext } from "../contexts/AppContext.js";
-import { signInPopupConfig, signUpPopupConfig } from "../utils/constants.js";
+import { AppContext } from "../contexts/AppContext";
+import { SIGNINPOPUP, SIGNUPPOPUP } from "../utils/constants";
 
 export default function SignupFormModal({ onSubmit }) {
   const { handleOpenModal } = useContext(AppContext);
-  const { modalName } = signUpPopupConfig;
+  const { modalName } = SIGNUPPOPUP;
   const inputsNames = {
     userEmail: "",
     userPassword: "",
@@ -18,7 +18,7 @@ export default function SignupFormModal({ onSubmit }) {
   const validator = useFormValidation(inputsNames);
   const { values, errors, isValid, handleInputChange, setInputs } = validator;
 
-  useSaveContext(modalName, inputsNames, validator);
+  useSaveContext(modalName, validator);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -27,7 +27,7 @@ export default function SignupFormModal({ onSubmit }) {
   };
 
   const handleSignIn = () => {
-    handleOpenModal(signInPopupConfig);
+    handleOpenModal(SIGNINPOPUP);
   };
 
   const alternativeButton = () => {
@@ -44,7 +44,7 @@ export default function SignupFormModal({ onSubmit }) {
 
   return (
     <ModalWithForm
-      {...signUpPopupConfig}
+      {...SIGNUPPOPUP}
       isValid={isValid}
       onSubmit={handleSubmit}
       alternativeButton={alternativeButton}

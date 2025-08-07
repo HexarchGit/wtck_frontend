@@ -1,0 +1,43 @@
+.info {
+  position: fixed;
+  bottom: 5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  font: normal 500 clamp(1rem, 1vw, 1.25rem) / 1 "Cabinet Grotesk", Arial,
+    sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  background-color: #ffffffcc;
+  padding: 10px;
+  border-radius: 10px;
+  gap: 10px;
+  width: max-content;
+}
+
+.info__text {
+  margin: 0;
+}
+.info__button {
+  border: none;
+  background-color: transparent;
+  font: inherit;
+  font-weight: 700;
+  box-sizing: border-box;
+  transition: opacity 0.5s;
+}
+
+.info__button:hover {
+  opacity: 60%;
+}
+.info__button_type_login {
+  border-radius: 10px;
+  border: 1px solid;
+}
+.info__button_type_close {
+  height: min(4vw, 20px);
+  width: min(4vw, 20px);
+  background: center no-repeat;
+  padding: 0;
+  background-image: url(../../assets/button_close_black.svg);
+}

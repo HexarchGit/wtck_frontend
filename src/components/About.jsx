@@ -2,7 +2,7 @@ import "./styles/About.css";
 
 export default function About() {
   return (
-    <div className="about">
+    <section className="about">
       <p className="about__text">
         This website is the final project of the Fullstack Developer course from
         Tripleten!
@@ -23,6 +23,6 @@ export default function About() {
         If you're logged in, you can add recipe in favorites to ease further
         search of it!
       </p>
-    </div>
+    </section>
   );
 }
