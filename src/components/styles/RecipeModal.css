@@ -1,0 +1,99 @@
+.modal_type_card {
+  overflow: auto;
+  background-color: #ffffffee;
+  border-radius: 16px;
+  position: relative;
+  display: grid;
+  grid-template:
+    "image info"
+    "text text";
+  margin: auto;
+  font: normal clamp(14px, 1.5vw, 1.5rem) / 1.2 "Cabinet Grotesk", Arial,
+    sans-serif;
+  max-height: 100%;
+  max-width: 90vw;
+  padding: 10px;
+}
+
+.modal__image {
+  object-fit: contain;
+  height: min(35vw, 500px);
+  width: min(35vw, 500px);
+  grid-area: image;
+  justify-self: end;
+  align-self: end;
+  border-radius: 10px;
+  border: 1px solid #00000033;
+}
+
+.modal__info {
+  padding: 2vw;
+  padding-bottom: 0;
+  display: flex;
+  flex-direction: column;
+  grid-area: info;
+}
+
+.modal__recipe-title {
+  margin: 0;
+  font-weight: 700;
+}
+
+.modal__details {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.modal__button_favorite {
+  width: 20px;
+  height: 20px;
+  background: center no-repeat;
+  object-fit: cover;
+  padding: 0;
+  outline: none;
+}
+
+.modal__button_favorite_active {
+  background-image: url("../../assets/like_active.svg");
+}
+.modal__button_favorite_inactive {
+  background-image: url("../../assets/like_inactive.svg");
+}
+
+.modal__list {
+  padding: 0 0 0 20px;
+  margin: 0;
+  list-style-type: circle;
+}
+
+.modal__text {
+  margin: 0;
+}
+
+.modal__recipe {
+  margin: 0;
+  padding: max(1.5vw, 5px);
+  line-height: 1;
+  grid-area: text;
+  line-height: 1.1;
+  white-space: pre-line;
+}
+
+@media screen and (max-width: 765px) {
+  .modal_type_card {
+    grid-template-areas:
+      "image image"
+      "info info"
+      "text text";
+  }
+
+  .modal__image {
+    justify-self: center;
+    align-self: center;
+  }
+
+  .modal__recipe {
+    border-top: 1px solid rgba(0, 0, 0, 0.3);
+  }
+}

@@ -1,0 +1,134 @@
+.header {
+  display: flex;
+  justify-content: flex-start;
+  font: normal 700 20px/1.2 "Cabinet Grotesk", Arial, sans-serif;
+  padding: 25px 0 0;
+  align-items: center;
+  gap: 10px;
+}
+
+.header__logo {
+  height: 80px;
+}
+
+.header__nav {
+  display: flex;
+  gap: 60px;
+  align-items: center;
+  background-color: #ffffffb3;
+  border-radius: 16px;
+  padding: 7px;
+  border: 1px solid #00000033;
+}
+
+.header__button {
+  border: none;
+  padding: 0;
+  font: inherit;
+  background: inherit;
+  cursor: pointer;
+}
+
+.header__button_type_hamburger {
+  background: url("../../assets/hamburger_icon.svg") center no-repeat;
+  width: 44px;
+  height: 44px;
+  object-fit: cover;
+  display: none;
+  margin-left: auto;
+}
+
+.header__mobile {
+  background-color: #fff;
+  position: absolute;
+  right: 16px;
+  top: 18px;
+  left: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 22px;
+  z-index: 1;
+  min-height: 208px;
+  box-shadow: 0px 2px 8px 0px #0000001a;
+  margin: 0 0 4px;
+  border-radius: 10px;
+}
+
+.header__button_type_close {
+  background: url("../../assets/button_close_black.svg") center no-repeat;
+  height: 21px;
+  width: 21px;
+  position: absolute;
+  top: 11px;
+  right: 11px;
+  padding: 0;
+}
+
+.header__userbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.header__avatar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(0, 0, 0, 0.8);
+  color: #fff;
+  width: 40px;
+  height: 40px;
+  overflow: hidden;
+  box-sizing: border-box;
+  object-fit: cover;
+}
+
+.header__link {
+  color: #000;
+  text-decoration: none;
+  background: transparent;
+}
+
+.header__guest {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.header__avatar_default {
+  cursor: default;
+}
+
+.header__mobile {
+  background-color: #fff;
+  position: absolute;
+  right: 16px;
+  top: 18px;
+  left: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 22px;
+  z-index: 1;
+  min-height: 208px;
+  box-shadow: 0px 2px 8px 0px #0000001a;
+  margin: 0 0 4px;
+  border-radius: 10px;
+}
+
+@media screen and (max-width: 765px) {
+  .header__button_type_hamburger {
+    display: block;
+  }
+  .header__nav {
+    display: none;
+  }
+  .header__guest {
+    flex-direction: column;
+  }
+}

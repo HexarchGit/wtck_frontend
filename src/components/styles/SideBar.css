@@ -1,0 +1,77 @@
+.sidebar {
+  font: normal 700 20px / 1 "Cabinet Grotesk", Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: start;
+  background-color: #fff;
+  border-radius: 20px;
+  padding: 10px;
+}
+
+.sidebar__userbar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 0 0 16px;
+}
+
+.sidebar__avatar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(0, 0, 0, 0.8);
+  color: #fff;
+  width: 56px;
+  height: 56px;
+  overflow: hidden;
+  box-sizing: border-box;
+  object-fit: cover;
+}
+
+.sidebar__avatar_default {
+  cursor: default;
+}
+
+.sidebar__tooltip {
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar__name {
+  margin: 0;
+}
+
+.sidebar__button {
+  border: none;
+  background-color: inherit;
+  padding: 0;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 765px) {
+  .sidebar__userbar {
+    border-bottom: #0000004d 1px solid;
+    align-items: flex-start;
+    border-top: #0000004d 1px solid;
+    padding: 20px 0;
+    gap: 20px;
+    width: 100%;
+  }
+
+  .sidebar__tooltip {
+    align-items: flex-start;
+    gap: 15px;
+  }
+
+  .sidebar__name {
+    padding: 0 0 4px;
+    font-size: 24px;
+  }
+
+  .sidebar__button {
+    display: block;
+  }
+}
