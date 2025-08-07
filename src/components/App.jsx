@@ -274,7 +274,7 @@ export default function App() {
           <CurrentUserContext.Provider
             value={{ userData, isLoggedIn, isAuthChecked }}
           >
-            <Header onOpen={handleOpenModal} />
+            <Header onLogOut={handleLogOut} />
             <Routes>
               <Route
                 path="/"

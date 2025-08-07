@@ -6,10 +6,14 @@ import { SIGNINPOPUP, SIGNUPPOPUP } from "../utils/constants.js";
 import { CurrentUserContext } from "../contexts/CurrentUserContext.js";
 import { AppContext } from "../contexts/AppContext.js";
 
-export default function Header() {
+export default function Header({ onLogOut }) {
   const [isMobileMenuOpened, setIsMobileMenuOpened] = useState(false);
   const { userData } = useContext(CurrentUserContext);
   const { handleOpenModal } = useContext(AppContext);
+
+  const handleLogOut = () => {
+    onLogOut();
+  };
 
   function Userbar({ name = "", link = "" }) {
     return (
@@ -28,6 +32,9 @@ export default function Header() {
             {name?.[0]?.toUpperCase()}
           </div>
         )}
+        <button className="header__button" onClick={handleLogOut}>
+          Log out
+        </button>
       </div>
     );
   }
