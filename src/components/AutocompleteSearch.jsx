@@ -87,7 +87,7 @@ const AutocompleteSearch = memo(({ searshList, onChose, searchElement }) => {
           {filtered.map((item, index) => (
             <li
               className={`search__result ${
-                highlightIndex === index && "search__result_highlighted"
+                highlightIndex === index ? "search__result_highlighted" : ""
               }`}
               key={index}
               onClick={() => {
