@@ -22,6 +22,12 @@
   object-fit: cover;
   width: 100%;
   display: block;
+  transition: opacity 0.5s;
+  opacity: 0;
+}
+
+.card__image_loaded {
+  opacity: 1;
 }
 
 .card__like {

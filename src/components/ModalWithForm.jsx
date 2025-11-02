@@ -1,7 +1,7 @@
 import Modal from "./Modal";
 import "./styles/ModalWithForm.css";
 import { AppContext } from "../contexts/AppContext.js";
-import { useContext, useState, useEffect } from "react";
+import { useContext } from "react";
 import { useCloseModal } from "../hooks/useCloseModal.js";
 
 export default function ModalWithForm({
@@ -14,15 +14,10 @@ export default function ModalWithForm({
   alternativeButton = null,
 }) {
   const { handleCloseModal } = useContext(AppContext);
-  const [isActive, setIsActive] = useState(false);
-
-  useEffect(() => {
-    setIsActive(true);
-  }, []);
 
   useCloseModal(handleCloseModal);
   return (
-    <Modal isActive={isActive}>
+    <Modal isActive={true}>
       <div className={`modal_type_${modalName}`}>
         <button
           className="modal__button modal__button_type_close"

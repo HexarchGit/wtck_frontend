@@ -79,7 +79,7 @@ const AutocompleteSearch = memo(({ searshList, onChose, searchElement }) => {
         }}
         onKeyDown={handleKeyboard}
         onFocus={handleFocus}
-        placeholder="Choose main ingridient"
+        placeholder="Choose main ingredient"
       />
 
       {isOpen && filtered.length > 0 && (

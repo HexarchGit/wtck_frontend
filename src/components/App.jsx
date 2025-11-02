@@ -26,7 +26,7 @@ import InfoPopup from "./InfoPopup.jsx";
 export default function App() {
   const [recipeList, setRecipeList] = useState();
   const [activeRecipe, setActiveRecipe] = useState();
-  const [ingridientsList, setIngridientsList] = useState([]);
+  const [ingredientsList, setIngredientsList] = useState([]);
   const [activeModal, setActiveModal] = useState();
   const [formContext, setFormContext] = useState({});
   const cleanFormContext = useFormContextCleaner(setFormContext);
@@ -37,6 +37,7 @@ export default function App() {
   const navigate = useNavigate();
   const [inputQuery, setInputQuery] = useState("");
   const [notification, setNotification] = useState();
+  const [favoritesList, setFavoritesList] = useState([]);
 
   const apiDb = useMemo(() => getApiDb(), []);
 
@@ -49,13 +50,6 @@ export default function App() {
     setNotification({ text: errorText });
   };
 
-  // useEffect(() => {
-  //   setNotification({
-  //     text: ("Oops, I did it again", "Test error"),
-  //     isNewUser: true,
-  //   });
-  // }, []);
-
   useEffect(() => {
     const jwt = getToken();
     if (!jwt) {
@@ -63,9 +57,9 @@ export default function App() {
       return;
     }
     checkAuth(jwt)
-      .then((response) => {
+      .then((responseAuth) => {
         setIsLoggedIn(true);
-        setUserData(response);
+        setUserData(responseAuth);
         setIsAuthChecked(true);
       })
       .catch((error) => {
@@ -76,18 +70,29 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    apiDb.getIngridients().then((response) => {
-      const names = response.meals.map((item) => item.strIngredient);
-      setIngridientsList(names);
-    });
+    apiDb
+      .getIngredients()
+      .then((responseIngredients) => setIngredientsList(responseIngredients));
   }, [apiDb]);
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      const token = getToken();
+      apiDb
+        .getFavorites(token)
+        .then((list) => {
+          setFavoritesList(list);
+        })
+        .catch((error) => handleError(error, "Cannot load favorite meals"));
+    }
+  }, [apiDb, isLoggedIn]);
 
   const handleChosing = useCallback(
     async (choose) => {
       setIsLoading(true);
       try {
-        const response = await apiDb.getRecipesByIngridient(choose);
-        setRecipeList(response.meals);
+        const response = await apiDb.getRecipesByIngredient(choose);
+        setRecipeList(response);
       } catch (error) {
         handleError(error, "Error while getting meals list");
       } finally {
@@ -97,48 +102,38 @@ export default function App() {
     [apiDb]
   );
 
-  const handleClearRecipeList = useCallback(() => {
+  const handleClearRecipeList = () => {
     setRecipeList();
-  }, []);
-
-  const parseMealIngridients = (meal) => {
-    const mealIngridients = [];
-    for (let i = 1; i <= 20; i++) {
-      if (meal[`strIngredient${i}`] && meal[`strMeasure${i}`])
-        mealIngridients.push(
-          `${meal[`strMeasure${i}`]} ${meal[`strIngredient${i}`]}`
-        );
-    }
-    meal.ingridients = mealIngridients;
-    return meal;
   };
 
   const handleOpenMealModal = useCallback(
     async (data) => {
       setIsLoading(true);
       try {
-        const mealData = await apiDb.getRecipeByID(data.idMeal);
-        const meal = parseMealIngridients(mealData.meals[0]);
-        setActiveRecipe(meal);
+        const mealData = await apiDb.getRecipeByID(data.mealId);
+        favoritesList.some((meal) => meal.mealId === mealData.mealId)
+          ? (mealData.isFavorite = true)
+          : (mealData.isFavorite = false);
+        setActiveRecipe(mealData);
       } catch (error) {
         handleError(error, "Error gaining recipe details");
       } finally {
         setIsLoading(false);
       }
     },
-    [apiDb]
+    [apiDb, favoritesList]
   );
 
-  const handleCloseMealModal = useCallback(() => {
+  const handleCloseMealModal = () => {
     setActiveRecipe();
-  }, []);
+  };
 
   const handleMainButton = useCallback(async () => {
     if (!recipeList) {
       setIsLoading(true);
       try {
-        const response = await apiDb.getRandomRecipe();
-        setRecipeList(response.meals);
+        const responseRandom = await apiDb.getRandomRecipe();
+        setRecipeList(responseRandom);
       } catch (error) {
         handleError(error, "Interactive button error");
       } finally {
@@ -159,15 +154,19 @@ export default function App() {
   };
 
   const handleSignIn = async ({ email, password }) => {
-    const { token } = await signin({
-      email,
-      password,
-    });
-    setToken(token);
-    setIsLoggedIn(true);
-    const user = await checkAuth(token);
-    setUserData(user);
-    handleCloseModal();
+    try {
+      const { token } = await signin({
+        email,
+        password,
+      });
+      setToken(token);
+      setIsLoggedIn(true);
+      const user = await checkAuth(token);
+      setUserData(user);
+      handleCloseModal();
+    } catch (error) {
+      handleError(error, "Failed to sign in");
+    }
   };
 
   const handleRegisterSubmit = async (submitData) => {
@@ -204,13 +203,8 @@ export default function App() {
       email: submitData["signinUserEmail"],
       password: submitData["signinUserPassword"],
     };
-    try {
-      await handleSignIn(signinData);
-    } catch (error) {
-      handleError(error, "Failed to sign in");
-    } finally {
-      setIsLoading(false);
-    }
+    await handleSignIn(signinData);
+    setIsLoading(false);
   };
 
   const handleLogOut = () => {
@@ -238,31 +232,31 @@ export default function App() {
     }
   };
 
-  const handleFavorites = async (mealCard, isInFavorites) => {
-    setIsLoading(true);
-    const mealData = {
-      mealName: mealCard.strMeal,
-      mealId: mealCard.idMeal,
-      imageUrl: mealCard.strMealThumb,
-    };
+  const handleFavorites = async ({ mealId }, isInFavorites) => {
     try {
       const token = getToken();
-      const newFavorites = isInFavorites
-        ? await apiDb.removeFavorite(token, { mealId: mealData.mealId })
-        : await apiDb.addFavorite(token, mealData);
-      setUserData((prev) => ({
-        ...prev,
-        favorites: [...newFavorites],
-      }));
+      const apiMeal = isInFavorites
+        ? await apiDb.removeFavorite(token, { mealId: mealId })
+        : await apiDb.addFavorite(token, { mealId: mealId });
+      setFavoritesList((prev) =>
+        isInFavorites
+          ? prev.filter((meal) => meal.mealId !== apiMeal.mealId)
+          : [...prev, apiMeal]
+      );
+      return true;
     } catch (error) {
       handleError(
         error,
         `Failed to ${isInFavorites ? "remove" : "add"} favorite`
       );
-    } finally {
-      setIsLoading(false);
+      return false;
     }
   };
+
+  const searchElement = useMemo(
+    () => ({ inputQuery, setInputQuery }),
+    [inputQuery]
+  );
 
   return (
     <main className="page">
@@ -280,13 +274,13 @@ export default function App() {
                 path="/"
                 element={
                   <Main
-                    searshList={ingridientsList}
+                    searshList={ingredientsList}
                     onChose={handleChosing}
                     recipeList={recipeList}
                     onOpen={handleOpenMealModal}
                     onClear={handleClearRecipeList}
                     onButton={handleMainButton}
-                    searchElement={{ inputQuery, setInputQuery }}
+                    searchElement={searchElement}
                   />
                 }
               />
@@ -297,6 +291,7 @@ export default function App() {
                     <Profile
                       onLogOut={handleLogOut}
                       onOpen={handleOpenMealModal}
+                      favorites={favoritesList}
                     />
                   </ProtectedRoute>
                 }

@@ -5,10 +5,11 @@ import logo from "../assets/logo.svg";
 import { SIGNINPOPUP, SIGNUPPOPUP } from "../utils/constants.js";
 import { CurrentUserContext } from "../contexts/CurrentUserContext.js";
 import { AppContext } from "../contexts/AppContext.js";
+import Preloader from "./Preloader.jsx";
 
 export default function Header({ onLogOut }) {
   const [isMobileMenuOpened, setIsMobileMenuOpened] = useState(false);
-  const { userData } = useContext(CurrentUserContext);
+  const { userData, isAuthChecked } = useContext(CurrentUserContext);
   const { handleOpenModal } = useContext(AppContext);
 
   const handleLogOut = () => {
@@ -79,8 +80,10 @@ export default function Header({ onLogOut }) {
       <nav className="header__nav">
         {userData ? (
           <Userbar name={userData.name} link={userData.avatar} />
-        ) : (
+        ) : isAuthChecked ? (
           GuestEntry()
+        ) : (
+          <Preloader />
         )}
         <About />
       </nav>

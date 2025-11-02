@@ -1,13 +1,10 @@
 import { memo } from "react";
 import "./styles/Main.css";
 import AutocompleteSearch from "./AutocompleteSearch";
-import RecipeCard from "./RecipeCard";
+import CardList from "./CardList";
 
 const Main = memo(
   ({ searshList, onChose, recipeList, onOpen, onButton, searchElement }) => {
-    const handleOpenModal = (card) => {
-      onOpen(card);
-    };
     const handleMainButton = () => {
       onButton();
     };
@@ -15,7 +12,7 @@ const Main = memo(
       <section className="main">
         {!recipeList && (
           <h1 className="main__text">
-            Look at your kitchen and pick an ingridient
+            Look at your kitchen and pick an ingredient
           </h1>
         )}
         <div className="main__searcharea">
@@ -38,15 +35,11 @@ const Main = memo(
         </div>
 
         {recipeList && <h1 className="main__text">You can cook:</h1>}
-        <ul className="main__list">
-          {recipeList?.map((recipe) => (
-            <RecipeCard
-              key={recipe.idMeal}
-              card={recipe}
-              handleCardClick={handleOpenModal}
-            />
-          ))}
-        </ul>
+        <CardList
+          list={recipeList}
+          onOpen={onOpen}
+          modifier={"position_center"}
+        />
       </section>
     );
   }

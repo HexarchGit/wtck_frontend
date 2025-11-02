@@ -2,7 +2,7 @@
 
 ## About the project
 
-The projects purpose is to make a platform that can take input from the user, ingridiend at that moment (or search random meal) and call 3rd-party API TheMealDB to the data and present it to the user.
+The projects purpose is to make a platform that can take input from the user, ingrediend at that moment (or search random meal) and call 3rd-party API TheMealDB to the data and present it to the user.
 User can sign up/log in, that's holding on my own backend. After logging the user will be able to like recipes, wich will add them to his personal favorites list.
 IMPORTANT NOTICE: For work with TheMealDB API needed my backend as a proxy server because of their CROS settings. For local testing, please, use backend repository.
 
@@ -35,3 +35,5 @@ IMPORTANT NOTICE: For work with TheMealDB API needed my backend as a proxy serve
 
 - [Me on LinkedIn](https://www.linkedin.com/in/sushkosa)
 - [Github backend repository](https://github.com/HexarchGit/wtck_backend)
+- [Deployed frontend](https://wtck.jumpingcrab.com)
+- [Deployed backend](https://api.wtck.jumpingcrab.com)

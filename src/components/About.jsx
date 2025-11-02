@@ -12,8 +12,8 @@ export default function About() {
         cook. And so projects name is "What to cook?"!
       </p>
       <p className="about__text">
-        The idea is if you'll look into your kitchen and pick one ingridient,
-        you'll get a list of recipes to cook with that ingridient.
+        The idea is if you'll look into your kitchen and pick one ingredient,
+        you'll get a list of recipes to cook with that ingredient.
       </p>
       <p className="about__text">
         Website powered by TheMealDB API, as I'm using their API for getting all
