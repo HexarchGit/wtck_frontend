@@ -25,25 +25,25 @@ class ApiDb {
     });
   }
 
-  getIngridients(endpoint = "proxydb/list.php?i=list") {
+  getIngredients(endpoint = "recipes/list.php?i=list") {
     return this._genericFetch({ endpoint });
   }
 
-  getRecipesByIngridient(endpoint) {
+  getRecipesByIngredient(endpoint) {
     return this._genericFetch({
-      endpoint: `proxydb/filter.php?i=${endpoint}`,
+      endpoint: `recipes/filter.php?i=${endpoint}`,
     });
   }
 
   getRecipeByID(endpoint) {
     return this._genericFetch({
-      endpoint: `proxydb/lookup.php?i=${endpoint}`,
+      endpoint: `recipes/lookup.php?i=${endpoint}`,
     });
   }
 
   getRandomRecipe() {
     return this._genericFetch({
-      endpoint: "proxydb/random.php",
+      endpoint: "recipes/random.php",
     });
   }
 
@@ -56,10 +56,14 @@ class ApiDb {
     });
   }
 
+  getFavorites(token) {
+    return this._genericFetch({ endpoint: `favorites`, token });
+  }
+
   addFavorite(token, body) {
     return this._genericFetch({
-      method: "PUT",
-      endpoint: `users/favorites`,
+      method: "POST",
+      endpoint: `favorites`,
       body,
       token,
     });
@@ -68,7 +72,7 @@ class ApiDb {
   removeFavorite(token, body) {
     return this._genericFetch({
       method: "DELETE",
-      endpoint: `users/favorites`,
+      endpoint: `favorites`,
       body,
       token,
     });

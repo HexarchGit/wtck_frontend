@@ -22,17 +22,21 @@
   padding: 0;
   margin: 0;
   z-index: 10;
+  border-radius: 25px;
+  overflow: hidden;
 }
 .search__result {
   padding: 8px;
-  background-color: rgba(255, 255, 255, 0.5);
+  background-color: rgba(255, 255, 255, 0.7);
   cursor: pointer;
 }
 
 .search__result:hover {
-  background-color: rgba(255, 255, 255, 0.8);
+  background-color: rgba(255, 255, 255, 0.9);
+  font-weight: 700;
 }
 
 .search__result_highlighted {
-  background-color: rgba(255, 255, 255, 0.8);
+  background-color: rgba(255, 255, 255, 0.9);
+  font-weight: 700;
 }

@@ -2,8 +2,8 @@ import { useState, useEffect, useMemo, memo } from "react";
 import { useDebounce } from "../hooks/useDebounce.js";
 import "./styles/AutocompleteSearch.css";
 
-const AutocompleteSearch = memo(({ searshList, onChose }) => {
-  const [inputQuery, setInputQuery] = useState("");
+const AutocompleteSearch = memo(({ searshList, onChose, searchElement }) => {
+  const { inputQuery, setInputQuery } = searchElement;
   const debouncedQuery = useDebounce(inputQuery);
   const [isOpen, setIsOpen] = useState(false);
   const [highlightIndex, setHighlightIndex] = useState(-1);
@@ -79,7 +79,7 @@ const AutocompleteSearch = memo(({ searshList, onChose }) => {
         }}
         onKeyDown={handleKeyboard}
         onFocus={handleFocus}
-        placeholder="Choose main ingridient"
+        placeholder="Choose main ingredient"
       />
 
       {isOpen && filtered.length > 0 && (
@@ -87,7 +87,7 @@ const AutocompleteSearch = memo(({ searshList, onChose }) => {
           {filtered.map((item, index) => (
             <li
               className={`search__result ${
-                highlightIndex === index && "search__result_highlighted"
+                highlightIndex === index ? "search__result_highlighted" : ""
               }`}
               key={index}
               onClick={() => {

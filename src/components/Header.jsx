@@ -2,14 +2,19 @@ import { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import "./styles/Header.css";
 import logo from "../assets/logo.svg";
-import { signInPopupConfig, signUpPopupConfig } from "../utils/constants.js";
+import { SIGNINPOPUP, SIGNUPPOPUP } from "../utils/constants.js";
 import { CurrentUserContext } from "../contexts/CurrentUserContext.js";
 import { AppContext } from "../contexts/AppContext.js";
+import Preloader from "./Preloader.jsx";
 
-export default function Header() {
+export default function Header({ onLogOut }) {
   const [isMobileMenuOpened, setIsMobileMenuOpened] = useState(false);
-  const { userData } = useContext(CurrentUserContext);
+  const { userData, isAuthChecked } = useContext(CurrentUserContext);
   const { handleOpenModal } = useContext(AppContext);
+
+  const handleLogOut = () => {
+    onLogOut();
+  };
 
   function Userbar({ name = "", link = "" }) {
     return (
@@ -28,6 +33,9 @@ export default function Header() {
             {name?.[0]?.toUpperCase()}
           </div>
         )}
+        <button className="header__button" onClick={handleLogOut}>
+          Log out
+        </button>
       </div>
     );
   }
@@ -54,11 +62,11 @@ export default function Header() {
   }
 
   const handleSignUp = () => {
-    handleOpenModal(signUpPopupConfig);
+    handleOpenModal(SIGNUPPOPUP);
   };
 
   const handleSignIn = () => {
-    handleOpenModal(signInPopupConfig);
+    handleOpenModal(SIGNINPOPUP);
   };
 
   const mobileMenuHandler = () => {
@@ -72,8 +80,10 @@ export default function Header() {
       <nav className="header__nav">
         {userData ? (
           <Userbar name={userData.name} link={userData.avatar} />
-        ) : (
+        ) : isAuthChecked ? (
           GuestEntry()
+        ) : (
+          <Preloader />
         )}
         <About />
       </nav>
